@@ -1,5 +1,5 @@
-from django.contrib.auth import get_user_model
-from django.db import models
+from django.contrib.auth import get_user_model  # type: ignore
+from django.db import models                    # type: ignore
 
 CHOICES = (
     ('Gray', 'Серый'),
@@ -25,7 +25,8 @@ class Cat(models.Model):
     birth_year = models.IntegerField()
     owner = models.ForeignKey(
         User, related_name='cats', on_delete=models.CASCADE)
-    achievements = models.ManyToManyField(Achievement, through='AchievementCat')
+    achievements = models.ManyToManyField(
+        Achievement, through='AchievementCat')
 
     def __str__(self):
         return self.name
