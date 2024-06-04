@@ -15,15 +15,15 @@ class CatViewSet(viewsets.ModelViewSet):
     queryset = Cat.objects.all()
     serializer_class = CatSerializer
     permission_classes = (OwnerOrReadOnly,)
-    throttle_classes = (WorkingHoursRateThrottle, ScopedRateThrottle)
-    throttle_scope = 'low_request'
-    pagination_class = CatsPagination
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter,
-                       filters.OrderingFilter)
-    filterset_fields = ('color', 'birth_year')
-    search_fields = ('name', 'achievements__name', 'owner__username')
-    ordering_fields = ('name', 'birth_year')
-    ordering = ('birth_year',)
+    # throttle_classes = (WorkingHoursRateThrottle, ScopedRateThrottle)
+    # throttle_scope = 'low_request'
+    # pagination_class = CatsPagination
+    # filter_backends = (DjangoFilterBackend, filters.SearchFilter,
+    #                    filters.OrderingFilter)
+    # filterset_fields = ('color', 'birth_year')
+    # search_fields = ('name', 'achievements__name', 'owner__username')
+    # ordering_fields = ('name', 'birth_year')
+    # ordering = ('birth_year',)
 
     # # Пример выбора permissions в зависимости от условий
     # def get_permissions(self):
@@ -37,19 +37,20 @@ class CatViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    # def get_queryset(self):                                   # Фильтрация 1 или 2
-    #     queryset = Cat.objects.all()
-    #     # color = self.kwargs['color']  # 1 НЕ РАБОТАЕТ БЕЗ нужных URLS, см. оф. доку
-    #     color = self.request.query_params.get('color')              # 2
-    #     if color is not None:                                       # 2
-    #         #  через ORM отфильтровать объекты модели Cat           # 2
-    #         #  по значению параметра color, полученного в запросе   # 2
-    #         queryset = queryset.filter(color=color)                 # 2
-    #     # print(color)
-    #     # Через ORM отфильтровать объекты модели Cat
-    #     # по значению параметра color, полученного в запросе
-    #     queryset = queryset.filter(color=color)
-    #     return queryset
+    def get_queryset(self):                                   # Фильтрация 1 или 2
+        queryset = Cat.objects.all()
+        # print(self)
+        # color = self.kwargs['color']                              # 1 НЕ РАБОТАЕТ БЕЗ нужных URLS, см. оф. доку, см. urls.py
+        color = self.request.query_params.get('color')              # 2
+        if color is not None:                                       # 2
+            #  через ORM отфильтровать объекты модели Cat           # 2
+            #  по значению параметра color, полученного в запросе   # 2
+            queryset = queryset.filter(color=color)                 # 2
+        # print(color)
+        # Через ORM отфильтровать объекты модели Cat
+        # по значению параметра color, полученного в запросе
+        queryset = queryset.filter(color=color)
+        return queryset
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
